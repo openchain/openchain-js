@@ -14,6 +14,6 @@ ApiClient.prototype.getRecord = function (key) {
         qs: { key: key },
         json: true
     });
-}
+};
 
 module.exports = ApiClient;
