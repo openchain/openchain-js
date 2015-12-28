@@ -1,0 +1,20 @@
+{
+  "name": "openchain-js",
+  "version": "0.0.0",
+  "description": "JavaScript bindings for Openchain",
+  "main": "index.js",
+  "author": {
+    "name": "Flavien Charlon",
+    "email": "flavien@charlon.net"
+  },
+  "dependencies": {
+    "bytebuffer": "4.1.0",
+    "protobufjs": "4.1.3",
+    "q": "^1.4.1",
+    "request-promise": "^1.0.2"
+  },
+  "devDependencies": {
+    "assert": "^1.3.0",
+    "mocha": "2.3.4"
+  }
+}
