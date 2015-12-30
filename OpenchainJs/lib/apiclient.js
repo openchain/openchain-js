@@ -1,7 +1,9 @@
 ﻿"use strict";
 
 var RecordKey = require("./recordkey");
+var encoding = require("./encoding");
 var ByteBuffer = require("bytebuffer");
+var Long = require("long");
 var request = require("request-promise");
 
 function ApiClient(endpoint) {
@@ -9,13 +11,18 @@ function ApiClient(endpoint) {
 };
 
 ApiClient.prototype.getRecord = function (key) {
+    
+    if (typeof key === "string") {
+        key = ByteBuffer.wrap(key, "utf8", true);
+    }
+
     return request({
         uri: this.endpoint + "record",
         qs: { key: key.toHex() },
         json: true
     }).then(function (result) {
         return {
-            key: RecordKey.parse(result.key),
+            key: ByteBuffer.fromHex(result.key),
             value: ByteBuffer.fromHex(result.value),
             version: ByteBuffer.fromHex(result.value)
         };
@@ -24,7 +31,7 @@ ApiClient.prototype.getRecord = function (key) {
 
 ApiClient.prototype.getDataRecord = function (path, recordName) {
     var key = new RecordKey(path, "DATA", recordName).toByteBuffer();
-
+    
     return this.getRecord(key).then(function (result) {
         var result = result;
         
@@ -33,10 +40,10 @@ ApiClient.prototype.getDataRecord = function (path, recordName) {
             result["data"] = null;
         }
         else {
-            result["data"] = encodingService.decodeString(result.value);
+            result["data"] = encoding.decodeString(result.value);
         }
         
-        return accountResult;
+        return result;
     });
 };
 
@@ -48,13 +55,13 @@ ApiClient.prototype.getAccountRecord = function (path, asset) {
         
         if (result.value.remaining() == 0) {
             // Unset value
-            result["data"] = null;
+            result["balance"] = Long.ZERO;
         }
         else {
-            result["data"] = encodingService.decodeString(result.value);
+            result["balance"] = encoding.decodeInt64(result.value);
         }
         
-        return accountResult;
+        return result;
     });
 }
 

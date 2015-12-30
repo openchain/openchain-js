@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 var ByteBuffer = require("bytebuffer");
+var LedgerPath = require("./ledgerpath");
 
 var RecordKey = function (path, recordType, name) {
     this.path = LedgerPath.parse(path);
@@ -25,10 +26,10 @@ RecordKey.parse = function (value) {
     var parts = text.split(":");
     
     if (parts.length < 3) {
-        throw "Invalid record key";
+        throw new Error("Invalid record key");
     }
     
-    return new LedgerRecord(parts[0], parts[1], parts.slice(2, parts.length).join(":"));
+    return new RecordKey(parts[0], parts[1], parts.slice(2, parts.length).join(":"));
 };
 
 module.exports = RecordKey;
