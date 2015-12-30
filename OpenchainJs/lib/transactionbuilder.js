@@ -53,7 +53,7 @@ TransactionBuilder.prototype.fetchAndAddAccountRecord = function (account, asset
             return result.data;
         }
     }).then(function (accountResult) {
-        return this.client.getAccount(accountResult, asset);
+        return this.client.getAccountRecord(accountResult, asset);
     })
     .then(function (currentRecord) {
         this.addAccountRecord(currentRecord, change);

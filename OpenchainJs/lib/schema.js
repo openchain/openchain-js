@@ -32,8 +32,6 @@ message Transaction { \
 
 var builder = ProtoBuf.loadProto(schema).build();
 
-
-
 module.exports = {
     Record: builder.Openchain.Record,
     Mutation: builder.Openchain.Mutation,

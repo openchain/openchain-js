@@ -32,10 +32,14 @@
   <ItemGroup>
     <Compile Include="index.js" />
     <Compile Include="lib\apiclient.js" />
+    <Compile Include="lib\encoding.js" />
+    <Compile Include="lib\ledgerpath.js" />
+    <Compile Include="lib\recordkey.js" />
     <Compile Include="lib\schema.js">
       <TestFramework>
       </TestFramework>
     </Compile>
+    <Compile Include="lib\transactionbuilder.js" />
     <Compile Include="tests\apiclient.js">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
