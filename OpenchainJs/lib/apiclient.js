@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var RecordKey = require("recordkey");
+var RecordKey = require("./recordkey");
 var ByteBuffer = require("bytebuffer");
 var request = require("request-promise");
 

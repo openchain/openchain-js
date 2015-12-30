@@ -44,6 +44,9 @@
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </Compile>
+    <Compile Include="tests\ledgerpath.js">
+      <TestFramework>Mocha</TestFramework>
+    </Compile>
     <Compile Include="tests\schema.js">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>

@@ -1,8 +1,8 @@
 ﻿"use strict";
 
-var Schema = require("schema");
+var Schema = require("./schema");
 var ByteBuffer = Schema.ByteBuffer;
-var ApiClient = require("apiclient");
+var ApiClient = require("./apiclient");
 
 function TransactionBuilder(url) {
     this.client = new ApiClient(url);
