@@ -2,6 +2,7 @@
 
 var RecordKey = require("./recordkey");
 var encoding = require("./encoding");
+
 var ByteBuffer = require("bytebuffer");
 var Long = require("long");
 var request = require("request-promise");

@@ -1,5 +1,6 @@
-﻿var assert = require("assert");
-var openchain = require("../index");
+﻿var openchain = require("../index");
+
+var assert = require("assert");
 var ByteBuffer = require("bytebuffer");
 var Long = require("long");
 
@@ -35,6 +36,12 @@ describe('ApiClient', function () {
             assert.equal(result.key.toHex(), "2f706174682f3a4143433a2f61737365742f");
             assert.equal(result.value.toHex(), "");
             assert.equal(result.balance, Long.ZERO);
+        });
+    });
+
+    it('initialize', function () {
+        return client.initialize().then(function (result) {
+            assert.notEqual(client.namespace.toHex(), "");
         });
     });
 

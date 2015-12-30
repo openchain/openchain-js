@@ -1,11 +1,15 @@
 {
-  "name": "openchain-js",
+  "name": "openchain",
   "version": "0.1.0",
   "description": "JavaScript bindings for Openchain",
   "main": "index.js",
   "author": {
     "name": "Flavien Charlon",
     "email": "flavien@charlon.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openchain/openchain-js.git"
   },
   "dependencies": {
     "bytebuffer": "4.1.0",

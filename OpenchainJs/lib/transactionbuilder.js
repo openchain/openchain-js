@@ -1,9 +1,9 @@
 ﻿"use strict";
 
-var ByteBuffer = Schema.ByteBuffer;
 var Schema = require("./schema");
 var ApiClient = require("./apiclient");
 var encoding = require("./encoding");
+var ByteBuffer = Schema.ByteBuffer;
 
 function TransactionBuilder(apiClient) {
     
@@ -35,7 +35,7 @@ TransactionBuilder.prototype.addRecord = function (key, value, version) {
 };
 
 TransactionBuilder.prototype.setMetadata = function (data) {
-    this.metadata = encodingService.encodeString(JSON.stringify(data));
+    this.metadata = encoding.encodeString(JSON.stringify(data));
 };
 
 TransactionBuilder.prototype.addAccountRecord = function (previous, change) {
@@ -45,7 +45,7 @@ TransactionBuilder.prototype.addAccountRecord = function (previous, change) {
         previous.version);
 };
 
-TransactionBuilder.prototype.fetchAndAddAccountRecord = function (account, asset, delta) {
+TransactionBuilder.prototype.updateAccountRecord = function (account, asset, delta) {
     // Resolve name accounts
     if (account.slice(0, 1) == "@") {
         account = "/aka/" + account.slice(1, account.length) + "/";

@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 var ByteBuffer = require("bytebuffer");
+
 var LedgerPath = require("./ledgerpath");
 
 var RecordKey = function (path, recordType, name) {
