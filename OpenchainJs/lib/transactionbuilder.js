@@ -51,19 +51,21 @@ TransactionBuilder.prototype.updateAccountRecord = function (account, asset, del
         account = "/aka/" + account.slice(1, account.length) + "/";
     }
     
+    var _this = this;
+
     return this.client.getDataRecord(account, "goto").then(function (result) {
         if (result.data == null) {
             return account;
         }
         else {
             // If a goto DATA record exists, we use the redirected path
-            this.addRecord(result.key, null, result.version);
+            _this.addRecord(result.key, null, result.version);
             return result.data;
         }
     }).then(function (accountResult) {
-        return this.client.getAccountRecord(accountResult, asset);
+        return _this.client.getAccountRecord(accountResult, asset);
     }).then(function (currentRecord) {
-        this.addAccountRecord(currentRecord, delta);
+        _this.addAccountRecord(currentRecord, delta);
     });
 };
 

@@ -1,8 +1,12 @@
 ﻿var assert = require("assert");
 var ByteBuffer = require("bytebuffer");
+var Long = require("long");
+var q = require("q");
 
 var openchain = require("../index");
 var TransactionBuilder = openchain.TransactionBuilder;
+var RecordKey = openchain.RecordKey;
+var encoding = openchain.encoding;
 
 describe("TransactionBuilder", function () {
 
@@ -41,15 +45,67 @@ describe("TransactionBuilder", function () {
         assert.equal(builder.metadata.toHex(), "7b2268656c6c6f223a22776f726c64227d");
     });
 
-    it("updateAccountRecord", function () {
-        var builder = new TransactionBuilder(new ApiClientMock());
+    it("updateAccountRecord no alias no goto", function () {
+        var api = new ApiClientMock();
+        var builder = new TransactionBuilder(api);
+        api.accountRecords["/path/"] = "200";
+
+        return builder.updateAccountRecord("/path/", "/asset/", 50).then(function () {
+            assert.equal(builder.records[0].key.toHex(), "2f706174682f3a4143433a2f61737365742f");
+            assert.equal(builder.records[0].value.data.toHex(), "00000000000000fa");
+            assert.equal(builder.records[0].version.toHex(), "bbbb");
+        });
+    });
+
+    it("updateAccountRecord goto", function () {
+        var api = new ApiClientMock();
+        var builder = new TransactionBuilder(api);
+        api.gotoRecords["/path/"] = "/target/";
+        api.accountRecords["/target/"] = "200";
         
-        builder.updateAccountRecord("/path/", "/asset/", 100);
-        
-        assert.equal(builder.metadata.toHex(), "7b2268656c6c6f223a22776f726c64227d");
+        return builder.updateAccountRecord("/path/", "/asset/", 50).then(function () {
+            // goto record
+            assert.equal(builder.records[0].key.toHex(), "2f706174682f3a444154413a676f746f");
+            assert.equal(builder.records[0].value, null);
+            assert.equal(builder.records[0].version.toHex(), "aaaa");
+            // ACC record
+            assert.equal(builder.records[1].key.toHex(), "2f7461726765742f3a4143433a2f61737365742f");
+            assert.equal(builder.records[1].value.data.toHex(), "00000000000000fa");
+            assert.equal(builder.records[1].version.toHex(), "bbbb");
+        });
     });
 });
 
-var ApiClientMock = function() {
+var ApiClientMock = function () {
     this.namespace = ByteBuffer.fromHex("abcdef");
-}
+    this.gotoRecords = {};
+    this.accountRecords = {};
+    
+    var _this = this;
+    
+    this.getDataRecord = function (path, recordName) {
+        var key = new RecordKey(path, "DATA", recordName).toByteBuffer();
+
+        if (recordName == "goto" && _this.gotoRecords[path]) {
+            var result = _this.gotoRecords[path];
+        }
+        else {
+            var result = null;
+        }
+        
+        return q.resolve({ data: result, key: key, version: ByteBuffer.fromHex("aaaa") });
+    };
+    
+    this.getAccountRecord = function (path, asset) {
+        var key = new RecordKey(path, "ACC", asset).toByteBuffer();
+
+        if (_this.accountRecords[path]) {
+            var result = Long.fromString(_this.accountRecords[path]);
+        }
+        else {
+            var result = Long.ZERO;
+        }
+
+        return q.resolve({ balance: result, key: key, version: ByteBuffer.fromHex("bbbb") });
+    };
+};
