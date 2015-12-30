@@ -9,22 +9,22 @@ var RecordKey = openchain.RecordKey;
 var encoding = openchain.encoding;
 
 describe("TransactionBuilder", function () {
-
+    
     it("constructor success", function () {
         var builder = new TransactionBuilder(new ApiClientMock());
-
+        
         assert.deepEqual(builder.records, []);
         assert.equal(builder.client.namespace.toHex(), "abcdef");
         assert.equal(builder.metadata.toHex(), "");
     });
-
+    
     it('constructor no namespace', function () {
         var client = new ApiClientMock();
         client.namespace = null;
         
         assert.throws(function () { new TransactionBuilder(client) }, Error);
     });
-
+    
     it("addRecord", function () {
         var builder = new TransactionBuilder(new ApiClientMock());
         
@@ -36,7 +36,7 @@ describe("TransactionBuilder", function () {
             { "key": ByteBuffer.fromHex("12"), "value": null, "version": ByteBuffer.fromHex("34") }
         ]);
     });
-
+    
     it("setMetadata", function () {
         var builder = new TransactionBuilder(new ApiClientMock());
         
@@ -44,19 +44,19 @@ describe("TransactionBuilder", function () {
         
         assert.equal(builder.metadata.toHex(), "7b2268656c6c6f223a22776f726c64227d");
     });
-
+    
     it("updateAccountRecord no alias no goto", function () {
         var api = new ApiClientMock();
         var builder = new TransactionBuilder(api);
         api.accountRecords["/path/"] = "200";
-
+        
         return builder.updateAccountRecord("/path/", "/asset/", 50).then(function () {
             assert.equal(builder.records[0].key.toHex(), "2f706174682f3a4143433a2f61737365742f");
             assert.equal(builder.records[0].value.data.toHex(), "00000000000000fa");
             assert.equal(builder.records[0].version.toHex(), "bbbb");
         });
     });
-
+    
     it("updateAccountRecord goto", function () {
         var api = new ApiClientMock();
         var builder = new TransactionBuilder(api);
@@ -74,6 +74,30 @@ describe("TransactionBuilder", function () {
             assert.equal(builder.records[1].version.toHex(), "bbbb");
         });
     });
+    
+    it("updateAccountRecord alias", function () {
+        var api = new ApiClientMock();
+        var builder = new TransactionBuilder(api);
+        api.accountRecords["/aka/alias/"] = "200";
+        
+        return builder.updateAccountRecord("@alias", "/asset/", 50).then(function () {
+            assert.equal(builder.records[0].key.toHex(), "2f616b612f616c6961732f3a4143433a2f61737365742f");
+            assert.equal(builder.records[0].value.data.toHex(), "00000000000000fa");
+            assert.equal(builder.records[0].version.toHex(), "bbbb");
+        });
+    });
+    
+    it("build", function () {
+        var builder = new TransactionBuilder(new ApiClientMock());
+        
+        builder.addRecord(ByteBuffer.fromHex("ab"), ByteBuffer.fromHex("cd"), ByteBuffer.fromHex("ef"));
+        builder.addRecord(ByteBuffer.fromHex("12"), null, ByteBuffer.fromHex("34"));
+        builder.setMetadata({ "hello": "world" });
+        
+        var result = builder.build();
+        
+        assert.equal(result.toHex(), "0a03abcdef120b0a01ab12030a01cd1a01ef12060a01121a01341a117b2268656c6c6f223a22776f726c64227d");
+    });
 });
 
 var ApiClientMock = function () {
@@ -85,7 +109,7 @@ var ApiClientMock = function () {
     
     this.getDataRecord = function (path, recordName) {
         var key = new RecordKey(path, "DATA", recordName).toByteBuffer();
-
+        
         if (recordName == "goto" && _this.gotoRecords[path]) {
             var result = _this.gotoRecords[path];
         }
@@ -98,14 +122,14 @@ var ApiClientMock = function () {
     
     this.getAccountRecord = function (path, asset) {
         var key = new RecordKey(path, "ACC", asset).toByteBuffer();
-
+        
         if (_this.accountRecords[path]) {
             var result = Long.fromString(_this.accountRecords[path]);
         }
         else {
             var result = Long.ZERO;
         }
-
+        
         return q.resolve({ balance: result, key: key, version: ByteBuffer.fromHex("bbbb") });
     };
 };
