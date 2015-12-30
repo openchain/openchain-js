@@ -1,1 +1,2 @@
-﻿# openchain-js
+﻿# openchain
+

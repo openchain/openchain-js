@@ -1,8 +1,9 @@
 {
   "name": "openchain",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JavaScript bindings for Openchain",
   "main": "index.js",
+  "license": "Apache-2.0",
   "author": {
     "name": "Flavien Charlon",
     "email": "flavien@charlon.net"
