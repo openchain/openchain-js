@@ -1,14 +1,19 @@
 ﻿"use strict";
 
-var Schema = require("./schema");
 var ByteBuffer = Schema.ByteBuffer;
+var Schema = require("./schema");
 var ApiClient = require("./apiclient");
+var encoding = require("./encoding");
 
-function TransactionBuilder(url) {
-    this.client = new ApiClient(url);
+function TransactionBuilder(apiClient) {
+    
+    if (apiClient.namespace === null) {
+        throw new Error("The API client has not been initialized");
+    }
+    
+    this.client = apiClient;
     this.records = [];
-    this.metadata = ByteBuffer.fromHex(""),
-    this.namespace = null;
+    this.metadata = ByteBuffer.fromHex("");
 };
 
 TransactionBuilder.prototype.addRecord = function (key, value, version) {
@@ -25,17 +30,20 @@ TransactionBuilder.prototype.addRecord = function (key, value, version) {
     }
     
     this.records.push(newRecord);
-
+    
     return this;
 };
 
 TransactionBuilder.prototype.setMetadata = function (data) {
     this.metadata = encodingService.encodeString(JSON.stringify(data));
-}
+};
 
-TransactionBuilder.prototype.addAccountRecord = function (path, delta) {
-
-}
+TransactionBuilder.prototype.addAccountRecord = function (previous, change) {
+    return this.addRecord(
+        previous.key,
+        encoding.encodeInt64(previous.balance.add(change)),
+        previous.version);
+};
 
 TransactionBuilder.prototype.fetchAndAddAccountRecord = function (account, asset, delta) {
     // Resolve name accounts
@@ -54,20 +62,19 @@ TransactionBuilder.prototype.fetchAndAddAccountRecord = function (account, asset
         }
     }).then(function (accountResult) {
         return this.client.getAccountRecord(accountResult, asset);
-    })
-    .then(function (currentRecord) {
-        this.addAccountRecord(currentRecord, change);
+    }).then(function (currentRecord) {
+        this.addAccountRecord(currentRecord, delta);
     });
-}
+};
 
-TransactionBuilder.prototype.submit = function () {
-    var constructedTransaction = new protobufBuilder.Mutation({
-        "namespace": this.namespace,
+TransactionBuilder.prototype.build = function () {
+    var constructedTransaction = new Schema.Mutation({
+        "namespace": this.client.namespace,
         "records": this.records,
         "metadata": this.metadata
     });
     
-    return apiService.postTransaction(_this.endpoint, constructedTransaction.encode(), key);
-}
+    return constructedTransaction.encode();
+};
 
 module.exports = TransactionBuilder;

@@ -8,6 +8,13 @@ var request = require("request-promise");
 
 function ApiClient(endpoint) {
     this.endpoint = endpoint;
+    this.namespace = null;
+};
+
+ApiClient.prototype.initialize = function () {
+    return this.getInfo().then(function (result) {
+        this.namespace = ByteBuffer.fromHex(result.namespace);
+    });
 };
 
 ApiClient.prototype.getRecord = function (key) {
@@ -64,5 +71,12 @@ ApiClient.prototype.getAccountRecord = function (path, asset) {
         return result;
     });
 }
+
+ApiClient.prototype.getInfo = function () {
+    return request({
+        uri: this.endpoint + "info",
+        json: true
+    });
+};
 
 module.exports = ApiClient;
