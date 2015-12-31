@@ -1,5 +1,9 @@
 .ntvs_analysis.dat
 npm-debug.log
 *.*proj
+*.sln
+.*
 bin
 obj
+TestResults
+.vs
