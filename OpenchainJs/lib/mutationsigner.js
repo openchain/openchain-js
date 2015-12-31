@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-var bitcore = require("bitcore");
+var bitcore = require("bitcore-lib");
 
 var MutationSigner = function (key) {
     

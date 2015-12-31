@@ -3,10 +3,14 @@
 var ByteBuffer = require("bytebuffer");
 var Long = require("long");
 
-module.exports = {};
-
 module.exports.encodeString = function (value) {
     return ByteBuffer.wrap(value, "utf8", true);
+};
+
+module.exports.decodeString = function (buffer) {
+    var result = buffer.readUTF8String(buffer.remaining());
+    buffer.flip();
+    return result;
 };
 
 module.exports.encodeInt64 = function (value, usage) {
@@ -23,12 +27,6 @@ module.exports.decodeInt64 = function (buffer) {
     
     buffer.BE();
     var result = buffer.readInt64();
-    buffer.flip();
-    return result;
-};
-
-module.exports.decodeString = function (buffer) {
-    var result = buffer.readUTF8String(buffer.remaining());
     buffer.flip();
     return result;
 };
