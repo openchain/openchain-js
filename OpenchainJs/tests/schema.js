@@ -1,8 +1,8 @@
-﻿var assert = require('assert');
+﻿var assert = require("assert");
 var openchain = require("../index");
 
-describe('Schema', function () {
-    it('Record', function () {
+describe("Schema", function () {
+    it("Record", function () {
         var record = new openchain.Schema.Record();
         
         record.key = openchain.Schema.ByteBuffer.fromHex("abcd");
@@ -14,7 +14,7 @@ describe('Schema', function () {
         assert.equal(record.version.toHex(), "4567");
     });
 
-    it('Mutation', function () {
+    it("Mutation", function () {
         var mutation = new openchain.Schema.Mutation();
         
         mutation.namespace = openchain.Schema.ByteBuffer.fromHex("abcd");
@@ -22,7 +22,7 @@ describe('Schema', function () {
         assert.equal(mutation.namespace.toHex(), "abcd");
     });
 
-    it('Transaction', function () {
+    it("Transaction", function () {
         var transaction = new openchain.Schema.Transaction();
         
         transaction.mutation = openchain.Schema.ByteBuffer.fromHex("abcd");

@@ -22,7 +22,7 @@ RecordKey.prototype.toByteBuffer = function () {
 RecordKey.parse = function (value) {
     var text = value;
     if (typeof text !== "string") {
-        text = encodingService.decodeString(text);
+        text = encoding.decodeString(text);
     }
     
     var parts = text.split(":");
