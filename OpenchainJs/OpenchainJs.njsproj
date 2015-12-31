@@ -34,6 +34,7 @@
     <Compile Include="lib\apiclient.js" />
     <Compile Include="lib\encoding.js" />
     <Compile Include="lib\ledgerpath.js" />
+    <Compile Include="lib\mutationsigner.js" />
     <Compile Include="lib\recordkey.js" />
     <Compile Include="lib\schema.js">
       <TestFramework>
