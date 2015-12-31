@@ -13,12 +13,14 @@
 // limitations under the License.
 
 var assert = require("assert");
+var bitcore = require("bitcore-lib");
 var ByteBuffer = require("bytebuffer");
 var Long = require("long");
 var q = require("q");
 var openchain = require("../index");
 var TransactionBuilder = openchain.TransactionBuilder;
 var RecordKey = openchain.RecordKey;
+var MutationSigner = openchain.MutationSigner;
 var encoding = openchain.encoding;
 
 describe("TransactionBuilder", function () {
@@ -111,6 +113,21 @@ describe("TransactionBuilder", function () {
         
         assert.equal(result.toHex(), "0a03abcdef120b0a01ab12030a01cd1a01ef12060a01121a01341a117b2268656c6c6f223a22776f726c64227d");
     });
+    
+    it("submit", function () {
+        var client = new SubmitClientMock();
+        var builder = new TransactionBuilder(client);
+        
+        builder.addRecord(ByteBuffer.fromHex("ab"), ByteBuffer.fromHex("cd"), ByteBuffer.fromHex("ef"));
+        builder.addSigningKey(new MutationSigner(new bitcore.HDPrivateKey("xprv9s21ZrQH143K2JF8RafpqtKiTbsbaxEeUaMnNHsm5o6wCW3z8ySyH4UxFVSfZ8n7ESu7fgir8imbZKLYVBxFPND1pniTZ81vKfd45EHKX73")));
+        
+        builder.submit();
+        
+        assert.equal(client.mutation.toHex(), "0a03abcdef120b0a01ab12030a01cd1a01ef");
+        assert.equal(client.signatures.length, 1);
+        assert.equal(client.signatures[0].pub_key, "023e4740d0ba639e28963f3476157b7cf2fb7c6fdf4254f97099cf8670b505ea59");
+        assert.notEqual(client.signatures[0].signature.length, 0);
+    });
 });
 
 var ApiClientMock = function () {
@@ -146,3 +163,14 @@ var ApiClientMock = function () {
         return q.resolve({ balance: result, key: key, version: ByteBuffer.fromHex("bbbb") });
     };
 };
+
+var SubmitClientMock = function () {
+    this.namespace = ByteBuffer.fromHex("abcdef");
+    
+    this.submit = function (mutation, signatures) {
+        this.mutation = mutation;
+        this.signatures = signatures;
+        
+        return q.resolve("success");
+    }
+}
