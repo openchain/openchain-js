@@ -21,3 +21,19 @@ module.exports.LedgerPath = require("./lib/ledgerpath");
 module.exports.RecordKey = require("./lib/recordkey");
 module.exports.encoding = require("./lib/encoding");
 module.exports.MutationSigner = require("./lib/mutationsigner");
+
+// Create the "openchain" network
+var bitcore = require("bitcore-lib");
+var livenet = bitcore.Networks.get("livenet");
+bitcore.Networks.add({
+    name: "openchain",
+    alias: "Openchain",
+    pubkeyhash: 76,
+    privatekey: livenet.privatekey,
+    scripthash: 78,
+    xpubkey: livenet.xpubkey,
+    xprivkey: livenet.xprivkey,
+    networkMagic: 0,
+    port: livenet.port,
+    dnsSeeds: livenet.dnsSeeds
+});
