@@ -1,10 +1,8 @@
-﻿# openchain
-
-Openchain is an open source distributed ledger technology. It is suited for organizations wishing to issue and manage digital assets in a robust, secure and scalable way. Visit [openchain.org](https://www.openchain.org/) for more information.
+﻿Openchain is an open source distributed ledger technology. It is suited for organizations wishing to issue and manage digital assets in a robust, secure and scalable way. Visit [openchain.org](https://www.openchain.org/) for more information.
 
 The full documentation for Openchain is available at [docs.openchain.org](https://docs.openchain.org/).
 
-This module is a NodeJS client library to use in conjunction with the [server](https://github.com/openchain/openchain/).
+This module is a NodeJS client library to use in conjunction with the Openchain [server](https://github.com/openchain/openchain/).
 
 ## Installation
 
