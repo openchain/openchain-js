@@ -5,6 +5,12 @@ var ApiClient = require("./apiclient");
 var encoding = require("./encoding");
 var ByteBuffer = Schema.ByteBuffer;
 
+/**
+ * Provides the ability to build an Openchain mutation.
+ * 
+ * @constructor
+ * @param {!ApiClient} apiClient The API client representing the endpoint on which the mutation should be submitted.
+ */
 function TransactionBuilder(apiClient) {
     
     if (apiClient.namespace === null) {
@@ -16,6 +22,14 @@ function TransactionBuilder(apiClient) {
     this.metadata = ByteBuffer.fromHex("");
 };
 
+/**
+ * Adds a record to the mutation.
+ * 
+ * @param {!ByteBuffer} key The key of the record being added.
+ * @param {ByteBuffer} value The value of the record being added.
+ * @param {!ByteBuffer} version The last known version of the record being added.
+ * @return {!TransactionBuilder} The transaction builder.
+ */
 TransactionBuilder.prototype.addRecord = function (key, value, version) {
     var newRecord = {
         "key": key,
@@ -34,17 +48,39 @@ TransactionBuilder.prototype.addRecord = function (key, value, version) {
     return this;
 };
 
+/**
+ * Sets the transaction metadata.
+ * 
+ * @param {!ByteBuffer} data The metadata.
+ * @return {!TransactionBuilder} The transaction builder.
+ */
 TransactionBuilder.prototype.setMetadata = function (data) {
     this.metadata = encoding.encodeString(JSON.stringify(data));
+    return this;
 };
 
-TransactionBuilder.prototype.addAccountRecord = function (previous, change) {
+/**
+ * Adds an account record to the mutation.
+ * 
+ * @param {{ key: !ByteBuffer, balance: !Long, version: !ByteBuffer }} previous The current record being modified.
+ * @param {!Long} delta The change in balance that the mutation is causing.
+ * @return {!TransactionBuilder} The transaction builder.
+ */
+TransactionBuilder.prototype.addAccountRecord = function (previous, delta) {
     return this.addRecord(
         previous.key,
-        encoding.encodeInt64(previous.balance.add(change)),
+        encoding.encodeInt64(previous.balance.add(delta)),
         previous.version);
 };
 
+/**
+ * Adds an account record to the mutation, based on the current version.
+ * 
+ * @param {string} account The path or alias being modified. Aliases should start with the "@" character.
+ * @param {string} asset The asset being modified.
+ * @param {!Long} delta The change in balance that the mutation is causing.
+ * @return {Promise<!TransactionBuilder>} The transaction builder.
+ */
 TransactionBuilder.prototype.updateAccountRecord = function (account, asset, delta) {
     // Resolve name accounts
     if (account.slice(0, 1) == "@") {
@@ -69,6 +105,11 @@ TransactionBuilder.prototype.updateAccountRecord = function (account, asset, del
     });
 };
 
+/**
+ * Builds the transaction.
+ * 
+ * @return {!ByteBuffer} The built transaction.
+ */
 TransactionBuilder.prototype.build = function () {
     var constructedTransaction = new Schema.Mutation({
         "namespace": this.client.namespace,
