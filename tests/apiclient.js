@@ -16,6 +16,7 @@ var openchain = require("../index");
 var assert = require("assert");
 var ByteBuffer = require("bytebuffer");
 var Long = require("long");
+var RecordKey = openchain.RecordKey;
 
 describe('ApiClient', function () {
     
@@ -31,6 +32,13 @@ describe('ApiClient', function () {
     
     it('getRecord string', function () {
         return client.getRecord("/:DATA:info").then(function (result) {
+            assert.equal(result.key.toHex(), "2f3a444154413a696e666f");
+            assert.notEqual(result.value.toHex(), "");
+        });
+    });
+    
+    it('getRecord RecordKey', function () {
+        return client.getRecord(new RecordKey("/", "DATA", "info")).then(function (result) {
             assert.equal(result.key.toHex(), "2f3a444154413a696e666f");
             assert.notEqual(result.value.toHex(), "");
         });
