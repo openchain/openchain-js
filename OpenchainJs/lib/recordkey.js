@@ -3,6 +3,7 @@
 var ByteBuffer = require("bytebuffer");
 
 var LedgerPath = require("./ledgerpath");
+var encoding = require("./encoding");
 
 var RecordKey = function (path, recordType, name) {
     this.path = LedgerPath.parse(path);
@@ -15,7 +16,7 @@ RecordKey.prototype.toString = function () {
 };
 
 RecordKey.prototype.toByteBuffer = function () {
-    return ByteBuffer.wrap(this.toString(), "utf8", true);
+    return encoding.encodeString(this.toString());
 };
 
 RecordKey.parse = function (value) {
