@@ -51,6 +51,9 @@
     <Compile Include="tests\ledgerpath.js">
       <TestFramework>Mocha</TestFramework>
     </Compile>
+    <Compile Include="tests\mutationsigner.js">
+      <TestFramework>Mocha</TestFramework>
+    </Compile>
     <Compile Include="tests\recordkey.js">
       <TestFramework>Mocha</TestFramework>
     </Compile>

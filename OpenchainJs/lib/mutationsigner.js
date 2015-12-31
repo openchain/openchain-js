@@ -1,6 +1,7 @@
 ﻿"use strict";
 
 var bitcore = require("bitcore-lib");
+var ByteBuffer = require("bytebuffer");
 
 /**
  * Provides the ability to sign a mutation.
