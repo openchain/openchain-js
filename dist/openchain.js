@@ -30,6 +30,10 @@ var Schema = require("./schema.js");
  * @param {string} endpoint The base URL of the endpoint.
  */
 function ApiClient(endpoint) {
+    if (endpoint.length > 0 && endpoint.slice(-1) != "/") {
+        endpoint += "/";
+    }
+    
     this.endpoint = endpoint;
     this.namespace = null;
 }
@@ -64,10 +68,10 @@ ApiClient.prototype.getRecord = function (key, version) {
     
     var getRecord;
     if (typeof version === "undefined" || version === null) {
-        getRecord = this.httpGet(this.endpoint + "/record?key=" + key.toHex());
+        getRecord = this.httpGet(this.endpoint + "record?key=" + key.toHex());
     }
     else {
-        getRecord = this.httpGet(this.endpoint + "/query/recordversion?key=" + key.toHex() + "&version=" + version.toHex());
+        getRecord = this.httpGet(this.endpoint + "query/recordversion?key=" + key.toHex() + "&version=" + version.toHex());
     }
     
     return getRecord.then(parseRecord);
@@ -130,7 +134,7 @@ ApiClient.prototype.getAccountRecord = function (path, asset, version) {
  */
 ApiClient.prototype.submit = function (mutation, signatures) {
     return this.httpPost(
-        this.endpoint + "/submit",
+        this.endpoint + "submit",
         JSON.stringify({ mutation: mutation.toHex(), signatures: signatures }));
 };
 
@@ -141,7 +145,7 @@ ApiClient.prototype.submit = function (mutation, signatures) {
  * @return {!Promise<!Array<!{ account: string, asset: string, balance: string, version: string }>>} The result of the operation.
  */
 ApiClient.prototype.getAccountRecords = function (account) {
-    return this.httpGet(this.endpoint + "/query/account?account=" + encodeURIComponent(account.toString()));
+    return this.httpGet(this.endpoint + "query/account?account=" + encodeURIComponent(account.toString()));
 };
 
 /*
@@ -151,7 +155,7 @@ ApiClient.prototype.getAccountRecords = function (account) {
  * @return {!Promise<!Array<!{ key: !ByteBuffer, value: !ByteBuffer, version: !ByteBuffer, balance: !Long }>>} The result of the operation.
  */
 ApiClient.prototype.getSubAccounts = function (account) {
-    return this.httpGet(this.endpoint + "/query/subaccounts?account=" + encodeURIComponent(account.toString()))
+    return this.httpGet(this.endpoint + "query/subaccounts?account=" + encodeURIComponent(account.toString()))
     .then(function (result) {
         var records = [];
         for (var i = 0; i < result.length; i++) {
@@ -176,7 +180,7 @@ ApiClient.prototype.getRecordMutations = function (key) {
         key = key.toByteBuffer();
     }
     
-    return this.httpGet(this.endpoint + "/query/recordmutations?key=" + key.toHex())
+    return this.httpGet(this.endpoint + "query/recordmutations?key=" + key.toHex())
     .then(function (result) {
         var records = [];
         for (var i = 0; i < result.length; i++) {
@@ -198,7 +202,7 @@ ApiClient.prototype.getTransaction = function (mutationHash) {
         mutationHash = ByteBuffer.fromHex(mutationHash);
     }
     
-    return this.httpGet(this.endpoint + "/query/transaction?format=raw&mutation_hash=" + mutationHash.toHex())
+    return this.httpGet(this.endpoint + "query/transaction?format=raw&mutation_hash=" + mutationHash.toHex())
     .then(function (result) {
         var buffer = ByteBuffer.fromHex(result.raw);
         var transaction = Schema.Transaction.decode(buffer.clone());
