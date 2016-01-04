@@ -1,6 +1,6 @@
 {
     "name": "openchain",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "main": "dist/openchain.js",
     "ignore": [
         "lib",
@@ -16,6 +16,6 @@
         "package.json"
     ],
     "dependencies": {
-        "bitcore-lib": "~0.13.11",
+        "bitcore-lib": "~0.13.11"
     }
 }
