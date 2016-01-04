@@ -1,8 +1,9 @@
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   
-  grunt.registerTask('default', ['jshint', 'browserify']);
+  grunt.registerTask('default', ['jshint', 'browserify', 'uglify']);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -24,6 +25,13 @@ module.exports = function(grunt) {
         },
         src: 'index.js',
         dest: 'dist/openchain.js'
+      }
+    },
+    uglify: {
+      dist: {
+        files: {
+          'dist/openchain.min.js': ['dist/openchain.js']
+        }
       }
     }
   });
