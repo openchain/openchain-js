@@ -83,4 +83,48 @@ describe('ApiClient', function () {
         });
     });
 
+    it('getSubAccounts', function () {
+        return client.getSubAccounts("/").then(function (result) {
+            assert.notEqual(result.length, 0);
+            assert.notEqual(result[0].key.toHex(), "");
+            assert.notEqual(result[0].value.toHex(), "");
+            assert.notEqual(result[0].version.toHex(), "");
+        });
+    });
+
+    it('getRecordMutations string', function () {
+        return client.getRecordMutations("/:DATA:info").then(function (result) {
+            assert.notEqual(result.length, 0);
+            assert.notEqual(result[0].toHex(), "");
+        });
+    });
+
+    it('getRecordMutations RecordKey', function () {
+        return client.getRecordMutations(new RecordKey("/", "DATA", "info")).then(function (result) {
+            assert.notEqual(result.length, 0);
+            assert.notEqual(result[0].toHex(), "");
+        });
+    });
+
+    it('getTransaction ByteBuffer', function () {
+        return client.getRecordMutations("/:DATA:info").then(function (result) {
+            return client.getTransaction(result[0]);
+        }).then(function (result) {
+            assert.notEqual(result.mutation.namespace.toHex(), "");
+            assert.notEqual(result.transaction.mutation.toHex(), "");
+            assert.notEqual(result.mutationHash.toHex(), "");
+            assert.notEqual(result.transactionHash.toHex(), "");
+        });
+    });
+
+    it('getTransaction string', function () {
+        return client.getRecordMutations("/:DATA:info").then(function (result) {
+            return client.getTransaction(result[0].toHex());
+        }).then(function (result) {
+            assert.notEqual(result.mutation.namespace.toHex(), "");
+            assert.notEqual(result.transaction.mutation.toHex(), "");
+            assert.notEqual(result.mutationHash.toHex(), "");
+            assert.notEqual(result.transactionHash.toHex(), "");
+        });
+    });
 });
