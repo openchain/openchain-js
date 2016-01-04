@@ -1,0 +1,21 @@
+{
+    "name": "openchain",
+    "version": "0.1.4",
+    "main": "dist/openchain.js",
+    "ignore": [
+        "lib",
+        "tests",
+        ".gitattributes",
+        ".gitignore",
+        ".npmignore",
+        "bower.json",
+        "gruntFile.js",
+        "package.json",
+        "openchain-js.njsproj",
+        "openchain-js.sln",
+        "package.json"
+    ],
+    "dependencies": {
+        "bitcore-lib": "~0.13.11",
+    },
+}
