@@ -1,7 +1,8 @@
 {
   "name": "openchain",
   "version": "0.1.6",
-  "description": "JavaScript bindings for Openchain",
+  "description": "JavaScript client library for Openchain",
+  "homepage": "https://www.openchain.org/",
   "main": "index.js",
   "license": "Apache-2.0",
   "author": {
