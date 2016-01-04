@@ -64,20 +64,13 @@ ApiClient.prototype.getRecord = function (key, version) {
     
     var getRecord;
     if (typeof version === "undefined" || version === null) {
-        getRecord = httpinvoke(
-            this.endpoint + "record?key=" + key.toHex(),
-            "GET");
+        getRecord = this.httpGet(this.endpoint + "/record?key=" + key.toHex());
     }
     else {
-        getRecord = httpinvoke(
-            this.endpoint + "query/recordversion?key=" + key.toHex() + "&version=" + version.toHex(),
-            "GET");
+        getRecord = this.httpGet(this.endpoint + "/query/recordversion?key=" + key.toHex() + "&version=" + version.toHex());
     }
     
-    return getRecord.then(function (data) {
-        var result = JSON.parse(data.body);
-        return parseRecord(result);
-    });
+    return getRecord.then(parseRecord);
 };
 
 /*
@@ -136,30 +129,19 @@ ApiClient.prototype.getAccountRecord = function (path, asset, version) {
  * @return {!Promise<!{ transaction_hash: string, mutation_hash: string }>} The result of the operation.
  */
 ApiClient.prototype.submit = function (mutation, signatures) {
-    return httpinvoke(
-        this.endpoint + "submit",
-        "POST",
-        {
-            input: JSON.stringify({ mutation: mutation.toHex(), signatures: signatures })
-        })
-    .then(function (data) {
-        return JSON.parse(data.body);
-    });
+    return this.httpPost(
+        this.endpoint + "/submit",
+        JSON.stringify({ mutation: mutation.toHex(), signatures: signatures }));
 };
 
 /*
  * Retrieves all the ACC records at a specific path.
  * 
  * @param {(string|!LedgerPath)} account The path to query records from.
- * @return {!Promise<!{ account: string, asset: string, balance: string, version: string }>} The result of the operation.
+ * @return {!Promise<!Array<!{ account: string, asset: string, balance: string, version: string }>>} The result of the operation.
  */
 ApiClient.prototype.getAccountRecords = function (account) {
-    return httpinvoke(
-        this.endpoint + "query/account?account=" + encodeURIComponent(account.toString()),
-        "GET")
-    .then(function (data) {
-        return JSON.parse(data.body);
-    });
+    return this.httpGet(this.endpoint + "/query/account?account=" + encodeURIComponent(account.toString()));
 };
 
 /*
@@ -169,17 +151,13 @@ ApiClient.prototype.getAccountRecords = function (account) {
  * @return {!Promise<!Array<!{ key: !ByteBuffer, value: !ByteBuffer, version: !ByteBuffer, balance: !Long }>>} The result of the operation.
  */
 ApiClient.prototype.getSubAccounts = function (account) {
-    return httpinvoke(
-        this.endpoint + "query/subaccounts?account=" + encodeURIComponent(account.toString()),
-        "GET")
-    .then(function (data) {
-        var result = JSON.parse(data.body);
-        
+    return this.httpGet(this.endpoint + "/query/subaccounts?account=" + encodeURIComponent(account.toString()))
+    .then(function (result) {
         var records = [];
         for (var i = 0; i < result.length; i++) {
             records.push(parseRecord(result[i]));
         }
-
+        
         return records;
     });
 };
@@ -198,12 +176,8 @@ ApiClient.prototype.getRecordMutations = function (key) {
         key = key.toByteBuffer();
     }
     
-    return httpinvoke(
-        this.endpoint + "query/recordmutations?key=" + key.toHex(),
-        "GET")
-    .then(function (data) {
-        var result = JSON.parse(data.body);
-
+    return this.httpGet(this.endpoint + "/query/recordmutations?key=" + key.toHex())
+    .then(function (result) {
         var records = [];
         for (var i = 0; i < result.length; i++) {
             records.push(ByteBuffer.fromHex(result[i].mutation_hash));
@@ -224,12 +198,8 @@ ApiClient.prototype.getTransaction = function (mutationHash) {
         mutationHash = ByteBuffer.fromHex(mutationHash);
     }
     
-    return httpinvoke(
-        this.endpoint + "query/transaction?format=raw&mutation_hash=" + mutationHash.toHex(),
-        "GET")
-    .then(function (data) {
-        var result = JSON.parse(data.body);
-
+    return this.httpGet(this.endpoint + "/query/transaction?format=raw&mutation_hash=" + mutationHash.toHex())
+    .then(function (result) {
         var buffer = ByteBuffer.fromHex(result.raw);
         var transaction = Schema.Transaction.decode(buffer.clone());
         var mutation = Schema.Mutation.decode(transaction.mutation.clone());
@@ -254,9 +224,18 @@ ApiClient.prototype.getTransaction = function (mutationHash) {
  * @return {!Promise<!{ namespace: string }>} The chain information.
  */
 ApiClient.prototype.getInfo = function () {
-    return httpinvoke(
-        this.endpoint + "info",
-        "GET")
+    return this.httpGet(this.endpoint + "/info");
+};
+
+ApiClient.prototype.httpGet = function (url) {
+    return httpinvoke(url, "GET")
+    .then(function (data) {
+        return JSON.parse(data.body);
+    });
+};
+
+ApiClient.prototype.httpPost = function (url, body) {
+    return httpinvoke(url, "POST", { input: body })
     .then(function (data) {
         return JSON.parse(data.body);
     });
@@ -619,7 +598,7 @@ var ByteBuffer = Schema.ByteBuffer;
  */
 function TransactionBuilder(apiClient) {
     
-    if (apiClient.namespace === null) {
+    if (typeof apiClient.namespace === "undefined" || apiClient.namespace === null) {
         throw new Error("The API client has not been initialized");
     }
     
