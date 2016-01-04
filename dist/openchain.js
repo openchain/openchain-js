@@ -30,7 +30,7 @@ var httpinvoke = require("httpinvoke");
 function ApiClient(endpoint) {
     this.endpoint = endpoint;
     this.namespace = null;
-};
+}
 
 /**
  * Initializes the client.
@@ -60,13 +60,14 @@ ApiClient.prototype.getRecord = function (key, version) {
         key = key.toByteBuffer();
     }
     
-    if (typeof version === "undefined" || version == null) {
-        var getRecord = httpinvoke(
+    var getRecord;
+    if (typeof version === "undefined" || version === null) {
+        getRecord = httpinvoke(
             this.endpoint + "record?key=" + key.toHex(),
             "GET");
     }
     else {
-        var getRecord = httpinvoke(
+        getRecord = httpinvoke(
             this.endpoint + "query/recordversion?key=" + key.toHex() + "&version=" + version.toHex(),
             "GET");
     }
@@ -93,14 +94,12 @@ ApiClient.prototype.getDataRecord = function (path, recordName, version) {
     var key = new RecordKey(path, "DATA", recordName);
     
     return this.getRecord(key, version).then(function (result) {
-        var result = result;
-        
-        if (result.value.remaining() == 0) {
+        if (result.value.remaining() === 0) {
             // Unset value
-            result["data"] = null;
+            result.data = null;
         }
         else {
-            result["data"] = encoding.decodeString(result.value);
+            result.data = encoding.decodeString(result.value);
         }
         
         return result;
@@ -119,19 +118,17 @@ ApiClient.prototype.getAccountRecord = function (path, asset, version) {
     var key = new RecordKey(path, "ACC", asset);
     
     return this.getRecord(key, version).then(function (result) {
-        var result = result;
-        
-        if (result.value.remaining() == 0) {
+        if (result.value.remaining() === 0) {
             // Unset value
-            result["balance"] = Long.ZERO;
+            result.balance = Long.ZERO;
         }
         else {
-            result["balance"] = encoding.decodeInt64(result.value);
+            result.balance = encoding.decodeInt64(result.value);
         }
         
         return result;
     });
-}
+};
 
 /*
  * Retrieves a record from the Openchain endpoint.
@@ -230,7 +227,7 @@ module.exports.encodeInt64 = function (value) {
  * @return {!Long} The decoded string.
  */
 module.exports.decodeInt64 = function (buffer) {
-    if (buffer.limit == 0)
+    if (buffer.limit === 0)
         return Long.ZERO;
     
     buffer.BE();
@@ -261,7 +258,7 @@ module.exports.decodeInt64 = function (buffer) {
  * @constructor
  * @param {!Array<!string>} parts The parts from which the path is composed.
  */
-var LedgerPath = function (parts) {
+function LedgerPath(parts) {
     /**
      * The parts from which the path is composed.
      * 
@@ -277,8 +274,8 @@ var LedgerPath = function (parts) {
  * @return {string} The string representation of the path.
  */
 LedgerPath.prototype.toString = function () {
-    return "/" + this.parts.map(function (item) { return item + "/" }).join("");
-}
+    return "/" + this.parts.map(function (item) { return item + "/"; }).join("");
+};
 
 /** 
  * Parses a chain path from a string.
@@ -289,12 +286,12 @@ LedgerPath.prototype.toString = function () {
 LedgerPath.parse = function (value) {
     var parts = value.split("/");
     
-    if (parts.length < 2 || parts[0] != "" || parts[parts.length - 1] != "") {
+    if (parts.length < 2 || parts[0] !== "" || parts[parts.length - 1] !== "") {
         throw new Error("Invalid path");
     }
     
     for (var i = 1; i < parts.length - 1; i++) {
-        if (parts[i] == "") {
+        if (parts[i] === "") {
             throw new Error("Invalid path");
         }
     }
@@ -329,13 +326,13 @@ var ByteBuffer = require("bytebuffer");
  * @constructor
  * @param {!HDPrivateKey} privateKey The private key used to sign the mutations.
  */
-var MutationSigner = function (privateKey) {
+function MutationSigner(privateKey) {
     this.publicKey = ByteBuffer.wrap(privateKey.publicKey.toBuffer());
     this._signer = bitcore.crypto.ECDSA().set({
         endian: "big",
         privkey: privateKey.privateKey
     });
-};
+}
 
 /** 
  * Signs a mutatation.
@@ -350,7 +347,7 @@ MutationSigner.prototype.sign = function (mutation) {
     var signatureBuffer = this._signer.set({ hashbuf: hash }).sign().sig.toBuffer();
     
     return ByteBuffer.wrap(signatureBuffer);
-}
+};
 
 module.exports = MutationSigner;
 },{"bitcore-lib":"bitcore-lib","bytebuffer":12}],5:[function(require,module,exports){
@@ -382,7 +379,7 @@ var encoding = require("./encoding");
  * @param {string} recordType The type of the record.
  * @param {string} name The name of the record.
  */
-var RecordKey = function (path, recordType, name) {
+function RecordKey(path, recordType, name) {
     this.path = LedgerPath.parse(path);
     this.recordType = recordType;
     this.name = name;
@@ -448,6 +445,7 @@ module.exports = RecordKey;
 var ByteBuffer = require("bytebuffer");
 var ProtoBuf = require("protobufjs");
 
+/*jshint multistr: true */
 var schema = "                      \
 syntax = 'proto3';                  \
                                     \
@@ -522,7 +520,7 @@ function TransactionBuilder(apiClient) {
     this.records = [];
     this.keys = [];
     this.metadata = ByteBuffer.fromHex("");
-};
+}
 
 /**
  * Adds a record to the mutation.
@@ -538,11 +536,11 @@ TransactionBuilder.prototype.addRecord = function (key, value, version) {
         "version": version
     };
     
-    if (value != null) {
-        newRecord["value"] = { "data": value };
+    if (value !== null) {
+        newRecord.value = { "data": value };
     }
     else {
-        newRecord["value"] = null;
+        newRecord.value = null;
     }
     
     this.records.push(newRecord);
@@ -592,7 +590,7 @@ TransactionBuilder.prototype.updateAccountRecord = function (account, asset, del
     var _this = this;
 
     return this.client.getDataRecord(account, "goto").then(function (result) {
-        if (result.data == null) {
+        if (result.data === null) {
             return account;
         }
         else {
@@ -616,7 +614,7 @@ TransactionBuilder.prototype.updateAccountRecord = function (account, asset, del
 TransactionBuilder.prototype.addSigningKey = function (key) {
     this.keys.push(key);
     return this;
-}
+};
 
 /**
  * Builds the transaction.
@@ -641,16 +639,16 @@ TransactionBuilder.prototype.build = function () {
 TransactionBuilder.prototype.submit = function () {
     var mutation = this.build();
     var signatures = [];
-
+    
     for (var i = 0; i < this.keys.length; i++) {
         signatures.push({
             signature: this.keys[i].sign(mutation).toHex(),
             pub_key: this.keys[i].publicKey.toHex()
         });
     }
-
+    
     return this.client.submit(mutation, signatures);
-}
+};
 
 module.exports = TransactionBuilder;
 },{"./apiclient":1,"./encoding":2,"./schema":6}],8:[function(require,module,exports){

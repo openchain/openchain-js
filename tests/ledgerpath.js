@@ -30,12 +30,12 @@ describe('LedgerPath', function () {
     });
     
     it('parse invalid', function () {
-        assert.throws(function () { LedgerPath.parse("abc/def/") }, Error);
-        assert.throws(function () { LedgerPath.parse("abc/") }, Error);
-        assert.throws(function () { LedgerPath.parse("/abc/def") }, Error);
-        assert.throws(function () { LedgerPath.parse("/abc") }, Error);
-        assert.throws(function () { LedgerPath.parse("") }, Error);
-        assert.throws(function () { LedgerPath.parse("/abc//def/") }, Error);
-        assert.throws(function () { LedgerPath.parse("/abc/def//") }, Error);
+        assert.throws(function () { LedgerPath.parse("abc/def/"); }, Error);
+        assert.throws(function () { LedgerPath.parse("abc/"); }, Error);
+        assert.throws(function () { LedgerPath.parse("/abc/def"); }, Error);
+        assert.throws(function () { LedgerPath.parse("/abc"); }, Error);
+        assert.throws(function () { LedgerPath.parse(""); }, Error);
+        assert.throws(function () { LedgerPath.parse("/abc//def/"); }, Error);
+        assert.throws(function () { LedgerPath.parse("/abc/def//"); }, Error);
     });
 });

@@ -37,7 +37,7 @@ describe("TransactionBuilder", function () {
         var client = new ApiClientMock();
         client.namespace = null;
         
-        assert.throws(function () { new TransactionBuilder(client) }, Error);
+        assert.throws(function () { new TransactionBuilder(client); }, Error);
     });
     
     it("addRecord", function () {
@@ -140,11 +140,12 @@ var ApiClientMock = function () {
     this.getDataRecord = function (path, recordName) {
         var key = new RecordKey(path, "DATA", recordName).toByteBuffer();
         
+        var result;
         if (recordName == "goto" && _this.gotoRecords[path]) {
-            var result = _this.gotoRecords[path];
+            result = _this.gotoRecords[path];
         }
         else {
-            var result = null;
+            result = null;
         }
         
         return q.resolve({ data: result, key: key, version: ByteBuffer.fromHex("aaaa") });
@@ -153,11 +154,12 @@ var ApiClientMock = function () {
     this.getAccountRecord = function (path, asset) {
         var key = new RecordKey(path, "ACC", asset).toByteBuffer();
         
+        var result;
         if (_this.accountRecords[path]) {
-            var result = Long.fromString(_this.accountRecords[path]);
+            result = Long.fromString(_this.accountRecords[path]);
         }
         else {
-            var result = Long.ZERO;
+            result = Long.ZERO;
         }
         
         return q.resolve({ balance: result, key: key, version: ByteBuffer.fromHex("bbbb") });
@@ -172,5 +174,5 @@ var SubmitClientMock = function () {
         this.signatures = signatures;
         
         return q.resolve("success");
-    }
-}
+    };
+};

@@ -1,10 +1,17 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   
-  grunt.registerTask('default', ['browserify']);
+  grunt.registerTask('default', ['jshint', 'browserify']);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    jshint: {
+      files: ['index.js', 'lib/**/*.js', 'tests/**/*.js'],
+      options: {
+        'node': true
+      }
+    },
     browserify: {
       main: {
         options: {
