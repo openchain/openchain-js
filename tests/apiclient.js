@@ -52,6 +52,14 @@ describe('ApiClient', function () {
         });
     });
     
+    it('getRecord fail', function () {
+        return client.getRecord("/:DATA:info", ByteBuffer.fromHex("abcd")).then(function (result) {
+            assert.fail();
+        }, function (err) {
+            assert.equal(404, err.statusCode);
+        });
+    });
+    
     it('getDataRecord', function () {
         return client.getDataRecord("/", "info").then(function (result) {
             assert.equal(result.key.toHex(), "2f3a444154413a696e666f");
@@ -82,7 +90,17 @@ describe('ApiClient', function () {
             assert.notEqual(client.namespace.toHex(), "");
         });
     });
-
+    
+    it('submit error', function () {
+        var mutation = ByteBuffer.fromHex("0a03abcdef120b0a01ab12030a01cd1a01ef");
+        return client.submit(mutation, []).then(function (result) {
+            assert.fail();
+        }, function (result) {
+            assert.equal(result.data.error_code, "InvalidNamespace");
+            assert.equal(result.statusCode, 400);
+        });
+    });
+    
     it('getSubAccounts', function () {
         return client.getSubAccounts("/").then(function (result) {
             assert.notEqual(result.length, 0);
@@ -91,21 +109,21 @@ describe('ApiClient', function () {
             assert.notEqual(result[0].version.toHex(), "");
         });
     });
-
+    
     it('getRecordMutations string', function () {
         return client.getRecordMutations("/:DATA:info").then(function (result) {
             assert.notEqual(result.length, 0);
             assert.notEqual(result[0].toHex(), "");
         });
     });
-
+    
     it('getRecordMutations RecordKey', function () {
         return client.getRecordMutations(new RecordKey("/", "DATA", "info")).then(function (result) {
             assert.notEqual(result.length, 0);
             assert.notEqual(result[0].toHex(), "");
         });
     });
-
+    
     it('getTransaction ByteBuffer', function () {
         return client.getRecordMutations("/:DATA:info").then(function (result) {
             return client.getTransaction(result[0]);
@@ -116,7 +134,7 @@ describe('ApiClient', function () {
             assert.notEqual(result.transactionHash.toHex(), "");
         });
     });
-
+    
     it('getTransaction string', function () {
         return client.getRecordMutations("/:DATA:info").then(function (result) {
             return client.getTransaction(result[0].toHex());
