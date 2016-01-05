@@ -131,7 +131,6 @@ console.log("Record name: " + recordName);
 // Create an Openchain client and signer
 var client = new openchain.ApiClient("http://localhost:8080/");
 var signer = new openchain.MutationSigner(privateKey);
-var transactionBuilder;
 
 // Initialize the client
 client.initialize()
