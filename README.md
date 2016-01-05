@@ -10,15 +10,56 @@ This module is a NodeJS client library to use in conjunction with the Openchain 
 $ npm install openchain
 ```
 
+``` bash
+$ bower install openchain
+```
+
 ## Usage
 
-### Import the module
+### Importing the module
 
 ``` js
 var openchain = require("openchain");
 ```
 
+### Modules
+
+The ``openchain`` module exports the following objects:
+
+- ``ApiClient``: A class wrapping the Openchain API calls.
+- ``Schema``: A set of classes (``Schema.Record``, ``Schema.Mutation`` and ``Schema.Transaction``) that can be used for serialization and deserialization of transactions and mutations.
+- ``TransactionBuilder``: A class facilitating the construction, signature and submission of transactions to an Openchain instance.
+- ``LedgerPath``: A class representing a path within the Openchain structure.
+- ``RecordKey``: A class representing a record key.
+- ``encoding``: A submodule that contains methods that can be used for encoding and decoding integers and string to/from a ByteBuffer object.
+- ``MutationSigner``: A class that can be used to sign a mutation.
+- ``ByteBuffer``: A buffer of raw bytes.
+- ``Long``: A class for representing a 64 bit integer value.
+
+## Code samples
+
+### Query the balance of an account
+
+This code queries an Openchain server for the balance of the account represented by the path ``/p2pkh/Xat6UaXpQE9Dxv6rLtxY1peBkzC1SQDiEX/`` for the asset represented by the path ``/asset/p2pkh/XcDCGPMtdrKxodQ4soFyYfDmr78gTvJ9jN/``.
+
+``` js
+var openchain = require("openchain");
+        
+var client = new openchain.ApiClient("http://localhost:8080/");
+
+client.getAccountRecord(
+    // Account path
+    "/p2pkh/Xat6UaXpQE9Dxv6rLtxY1peBkzC1SQDiEX/",
+    // Asset path
+    "/asset/p2pkh/XcDCGPMtdrKxodQ4soFyYfDmr78gTvJ9jN/")
+.then(function (result) {
+    console.log("Balance: " + result.balance.toString());
+});
+```
+
 ### Submit a transaction
+
+This code submits a transaction that transfers 100 units of an asset from an issuance account (e.g. ``/asset/p2pkh/Xat6UaXpQE9Dxv6rLtxY1peBkzC1SQDiEX/``) to a normal wallet account (e.g. ``/p2pkh/Xat6UaXpQE9Dxv6rLtxY1peBkzC1SQDiEX/``).
 
 ``` js
 var openchain = require("openchain");
@@ -43,8 +84,9 @@ var client = new openchain.ApiClient("http://localhost:8080/");
 var signer = new openchain.MutationSigner(privateKey);
 
 // Initialize the client
-client.initialize().then(function () {
-
+client.initialize()
+.then(function () {
+    // Create a new transaction builder
     return new openchain.TransactionBuilder(client)
         // Add the key to the transaction builder
         .addSigningKey(signer)
@@ -52,22 +94,70 @@ client.initialize().then(function () {
         .setMetadata({ "memo": "Issued through NodeJS" })
         // Take 100 units of the asset from the issuance path
         .updateAccountRecord(issuancePath, assetPath, -100);
-
-}).then(function (transactionBuilder) {
-    
+})
+.then(function (transactionBuilder) {
     // Add 100 units of the asset to the target wallet path
     return transactionBuilder.updateAccountRecord(walletPath, assetPath, 100);
-
-}).then(function (transactionBuilder) {
-    
+})
+.then(function (transactionBuilder) {
     // Submit the transaction
     return transactionBuilder.submit();
-
-}).then(function (result) {
-    
-    console.log(result);
-});
+})
+.then(function (result) { console.log(result); });
 ```
+
+### Store data on the chain
+
+This code submits a transaction recording a piece of arbitrary data (the ``storedData`` variable) into the chain. It records it 
+
+``` js
+var openchain = require("openchain");
+var bitcore = require("bitcore-lib");
+
+var seed = "0123456789abcdef0123456789abcdef";
+
+// Load a private key from a seed
+var privateKey = bitcore.HDPrivateKey.fromSeed(seed, "openchain");
+var address = privateKey.publicKey.toAddress();
+
+// Calculate the accounts corresponding to the private key
+var dataPath = "/asset/p2pkh/" + address + "/metadata/";
+var recordName = "datarecord";
+var storedData = "This is the data to store in the chain";
+
+console.log("Account path: " + dataPath);
+console.log("Record name: " + recordName);
+
+// Create an Openchain client and signer
+var client = new openchain.ApiClient("http://localhost:8080/");
+var signer = new openchain.MutationSigner(privateKey);
+var transactionBuilder;
+
+// Initialize the client
+client.initialize()
+.then(function () {
+    // Retrieve the record being modified
+    return client.getDataRecord(dataPath, recordName)
+})
+.then(function (dataRecord) {
+    // Encode the data into a ByteBuffer
+    var newValue = openchain.encoding.encodeString(storedData);
+
+    // Create a new transaction builder
+    return new openchain.TransactionBuilder(client)
+        // Add the key to the transaction builder
+        .addSigningKey(signer)
+        // Modify the record
+        .addRecord(dataRecord.key, newValue, dataRecord.version)
+        // Submit the transaction
+        .submit();
+})
+.then(function (result) { console.log(result); });
+```
+
+### Other use
+
+The Openchain JavaScript client library is also used by the Openchain web-wallet available on [GitHub](https://github.com/openchain/openchain-wallet/).
 
 ## License
 
