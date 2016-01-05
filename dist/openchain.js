@@ -576,8 +576,7 @@ var builder = ProtoBuf.loadProto(schema).build();
 module.exports = {
     Record: builder.Openchain.Record,
     Mutation: builder.Openchain.Mutation,
-    Transaction: builder.Openchain.Transaction,
-    ByteBuffer: ByteBuffer
+    Transaction: builder.Openchain.Transaction
 };
 
 },{"bytebuffer":12,"protobufjs":17}],7:[function(require,module,exports){
