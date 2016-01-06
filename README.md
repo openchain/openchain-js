@@ -16,7 +16,24 @@ $ bower install openchain
 
 ## Usage
 
-### Importing the module
+### Node.js
+
+Import the module:
+
+``` js
+var openchain = require("openchain");
+```
+
+### In the browser
+
+Reference the scripts:
+
+``` html
+<script src="bower_components/bitcore-lib/bitcore-lib.min.js"></script>
+<script src="bower_components/openchain/dist/openchain.min.js"></script>
+```
+
+Import the module:
 
 ``` js
 var openchain = require("openchain");
