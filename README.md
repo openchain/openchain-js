@@ -4,19 +4,15 @@ The full documentation for Openchain is available at [docs.openchain.org](https:
 
 This module is a NodeJS client library to use in conjunction with the Openchain [server](https://github.com/openchain/openchain/).
 
-## Installation
+## Getting started
+
+### Node.js
+
+Install the module through NPM:
 
 ``` bash
 $ npm install openchain
 ```
-
-``` bash
-$ bower install openchain
-```
-
-## Usage
-
-### Node.js
 
 Import the module:
 
@@ -25,6 +21,12 @@ var openchain = require("openchain");
 ```
 
 ### In the browser
+
+Install the module through Bower:
+
+``` bash
+$ bower install openchain
+```
 
 Reference the scripts:
 
@@ -39,7 +41,7 @@ Import the module:
 var openchain = require("openchain");
 ```
 
-### Modules
+## Modules
 
 The ``openchain`` module exports the following objects:
 
@@ -48,7 +50,7 @@ The ``openchain`` module exports the following objects:
 - ``TransactionBuilder``: A class facilitating the construction, signature and submission of transactions to an Openchain instance.
 - ``LedgerPath``: A class representing a path within the Openchain structure.
 - ``RecordKey``: A class representing a record key.
-- ``encoding``: A submodule that contains methods that can be used for encoding and decoding integers and string to/from a ByteBuffer object.
+- ``encoding``: A submodule that contains methods that can be used for encoding and decoding integers and string to/from a ``ByteBuffer`` object.
 - ``MutationSigner``: A class that can be used to sign a mutation.
 - ``ByteBuffer``: A buffer of raw bytes.
 - ``Long``: A class for representing a 64 bit integer value.
