@@ -127,7 +127,9 @@ client.initialize()
 
 ### Store data on the chain
 
-This code submits a transaction recording a piece of arbitrary data (the ``storedData`` variable) into the chain. It records it 
+This code submits a transaction recording a piece of arbitrary data (the ``storedData`` variable) into the chain. The data may be anything: arbitrary text, JSON data, XML data or even binary data.
+
+[Asset definition records](https://docs.openchain.org/en/latest/ledger-rules/general.html#asset-definition-record-asdef), [ACL records](https://docs.openchain.org/en/latest/ledger-rules/dynamic-permissions.html) and [goto records](https://docs.openchain.org/en/latest/ledger-rules/general.html#goto-records-goto) use this approach.
 
 ``` js
 var openchain = require("openchain");
