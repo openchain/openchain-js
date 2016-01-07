@@ -177,7 +177,7 @@ client.initialize()
 
 ### Other use
 
-The Openchain JavaScript client library is also used by the Openchain web-wallet available on [GitHub](https://github.com/openchain/openchain-wallet/).
+The Openchain JavaScript client library is also used by the Openchain web-wallet available on [GitHub](https://github.com/openchain/wallet/).
 
 ## License
 
