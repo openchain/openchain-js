@@ -17,8 +17,8 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 
 var RecordKey = require("./recordkey");
 var encoding = require("./encoding");
-var ByteBuffer = require("bytebuffer");
-var Long = require("long");
+var ByteBuffer = require("protobufjs").ByteBuffer;
+var Long = require("protobufjs").Long;
 var httpinvoke = require("httpinvoke");
 var bitcore = require("bitcore-lib");
 var Schema = require("./schema.js");
@@ -262,7 +262,7 @@ var parseResponse = function (result) {
 };
 
 module.exports = ApiClient;
-},{"./encoding":2,"./recordkey":5,"./schema.js":6,"bitcore-lib":"bitcore-lib","bytebuffer":12,"httpinvoke":13,"long":15}],2:[function(require,module,exports){
+},{"./encoding":2,"./recordkey":5,"./schema.js":6,"bitcore-lib":"bitcore-lib","httpinvoke":13,"protobufjs":17}],2:[function(require,module,exports){
 // Copyright 2015 Coinprism, Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -279,8 +279,8 @@ module.exports = ApiClient;
 
 "use strict";
 
-var ByteBuffer = require("bytebuffer");
-var Long = require("long");
+var ByteBuffer = require("protobufjs").ByteBuffer;
+var Long = require("protobufjs").Long;
 
 /*
  * Encodes a string into a byte buffer.
@@ -333,7 +333,7 @@ module.exports.decodeInt64 = function (buffer) {
     buffer.flip();
     return result;
 };
-},{"bytebuffer":12,"long":15}],3:[function(require,module,exports){
+},{"protobufjs":17}],3:[function(require,module,exports){
 // Copyright 2015 Coinprism, Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -416,7 +416,7 @@ module.exports = LedgerPath;
 "use strict";
 
 var bitcore = require("bitcore-lib");
-var ByteBuffer = require("bytebuffer");
+var ByteBuffer = require("protobufjs").ByteBuffer;
 
 /**
  * Provides the ability to sign a mutation.
@@ -448,7 +448,7 @@ MutationSigner.prototype.sign = function (mutation) {
 };
 
 module.exports = MutationSigner;
-},{"bitcore-lib":"bitcore-lib","bytebuffer":12}],5:[function(require,module,exports){
+},{"bitcore-lib":"bitcore-lib","protobufjs":17}],5:[function(require,module,exports){
 // Copyright 2015 Coinprism, Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -465,7 +465,7 @@ module.exports = MutationSigner;
 
 "use strict";
 
-var ByteBuffer = require("bytebuffer");
+var ByteBuffer = require("protobufjs").ByteBuffer;
 var LedgerPath = require("./ledgerpath");
 var encoding = require("./encoding");
 
@@ -523,7 +523,7 @@ RecordKey.parse = function (value) {
 };
 
 module.exports = RecordKey;
-},{"./encoding":2,"./ledgerpath":3,"bytebuffer":12}],6:[function(require,module,exports){
+},{"./encoding":2,"./ledgerpath":3,"protobufjs":17}],6:[function(require,module,exports){
 // Copyright 2015 Coinprism, Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -540,7 +540,7 @@ module.exports = RecordKey;
 
 "use strict";
 
-var ByteBuffer = require("bytebuffer");
+var ByteBuffer = require("protobufjs").ByteBuffer;
 var ProtoBuf = require("protobufjs");
 
 /*jshint multistr: true */
@@ -579,7 +579,7 @@ module.exports = {
     Transaction: builder.Openchain.Transaction
 };
 
-},{"bytebuffer":12,"protobufjs":17}],7:[function(require,module,exports){
+},{"protobufjs":17}],7:[function(require,module,exports){
 // Copyright 2015 Coinprism, Inc.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -599,7 +599,7 @@ module.exports = {
 var Schema = require("./schema");
 var ApiClient = require("./apiclient");
 var encoding = require("./encoding");
-var ByteBuffer = Schema.ByteBuffer;
+var ByteBuffer = require("protobufjs").ByteBuffer;
 
 /**
  * Provides the ability to build an Openchain mutation.
@@ -748,7 +748,7 @@ TransactionBuilder.prototype.submit = function () {
 };
 
 module.exports = TransactionBuilder;
-},{"./apiclient":1,"./encoding":2,"./schema":6}],8:[function(require,module,exports){
+},{"./apiclient":1,"./encoding":2,"./schema":6,"protobufjs":17}],8:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -13850,8 +13850,8 @@ module.exports.LedgerPath = require("./lib/ledgerpath");
 module.exports.RecordKey = require("./lib/recordkey");
 module.exports.encoding = require("./lib/encoding");
 module.exports.MutationSigner = require("./lib/mutationsigner");
-module.exports.ByteBuffer = require("bytebuffer");
-module.exports.Long = require("long");
+module.exports.ByteBuffer = require("protobufjs").ByteBuffer;
+module.exports.Long = require("protobufjs").Long;
 
 // Create the "openchain" network
 var bitcore = require("bitcore-lib");
@@ -13868,4 +13868,4 @@ bitcore.Networks.add({
     port: livenet.port,
     dnsSeeds: livenet.dnsSeeds
 });
-},{"./lib/apiclient":1,"./lib/encoding":2,"./lib/ledgerpath":3,"./lib/mutationsigner":4,"./lib/recordkey":5,"./lib/schema":6,"./lib/transactionbuilder":7,"bitcore-lib":"bitcore-lib","bytebuffer":12,"long":15}]},{},["openchain"]);
+},{"./lib/apiclient":1,"./lib/encoding":2,"./lib/ledgerpath":3,"./lib/mutationsigner":4,"./lib/recordkey":5,"./lib/schema":6,"./lib/transactionbuilder":7,"bitcore-lib":"bitcore-lib","protobufjs":17}]},{},["openchain"]);
