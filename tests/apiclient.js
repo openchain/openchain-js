@@ -14,8 +14,8 @@
 
 var openchain = require("../index");
 var assert = require("assert");
-var ByteBuffer = require("bytebuffer");
-var Long = require("long");
+var ByteBuffer = require("protobufjs").ByteBuffer;
+var Long = require("protobufjs").Long;
 var RecordKey = openchain.RecordKey;
 
 describe('ApiClient', function () {

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 var assert = require("assert");
-var ByteBuffer = require("bytebuffer");
-var Long = require("long");
+var ByteBuffer = require("protobufjs").ByteBuffer;
+var Long = require("protobufjs").Long;
 var openchain = require("../index");
 
 describe("encoding", function () {

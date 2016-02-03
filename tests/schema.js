@@ -19,9 +19,9 @@ describe("Schema", function () {
     it("Record", function () {
         var record = new openchain.Schema.Record();
         
-        record.key = openchain.Schema.ByteBuffer.fromHex("abcd");
-        record.value = openchain.Schema.ByteBuffer.fromHex("0123");
-        record.version = openchain.Schema.ByteBuffer.fromHex("4567");
+        record.key = openchain.ByteBuffer.fromHex("abcd");
+        record.value = openchain.ByteBuffer.fromHex("0123");
+        record.version = openchain.ByteBuffer.fromHex("4567");
         
         assert.equal(record.key.toHex(), "abcd");
         assert.equal(record.value.toHex(), "0123");
@@ -31,7 +31,7 @@ describe("Schema", function () {
     it("Mutation", function () {
         var mutation = new openchain.Schema.Mutation();
         
-        mutation.namespace = openchain.Schema.ByteBuffer.fromHex("abcd");
+        mutation.namespace = openchain.ByteBuffer.fromHex("abcd");
         
         assert.equal(mutation.namespace.toHex(), "abcd");
     });
@@ -39,7 +39,7 @@ describe("Schema", function () {
     it("Transaction", function () {
         var transaction = new openchain.Schema.Transaction();
         
-        transaction.mutation = openchain.Schema.ByteBuffer.fromHex("abcd");
+        transaction.mutation = openchain.ByteBuffer.fromHex("abcd");
         
         assert.equal(transaction.mutation.toHex(), "abcd");
     });

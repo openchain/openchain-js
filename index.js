@@ -21,8 +21,8 @@ module.exports.LedgerPath = require("./lib/ledgerpath");
 module.exports.RecordKey = require("./lib/recordkey");
 module.exports.encoding = require("./lib/encoding");
 module.exports.MutationSigner = require("./lib/mutationsigner");
-module.exports.ByteBuffer = require("bytebuffer");
-module.exports.Long = require("long");
+module.exports.ByteBuffer = require("protobufjs").ByteBuffer;
+module.exports.Long = require("protobufjs").Long;
 
 // Create the "openchain" network
 var bitcore = require("bitcore-lib");

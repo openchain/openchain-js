@@ -14,7 +14,7 @@
 
 var assert = require("assert");
 var bitcore = require("bitcore-lib");
-var ByteBuffer = require("bytebuffer");
+var ByteBuffer = require("protobufjs").ByteBuffer;
 var openchain = require("../index");
 var MutationSigner = openchain.MutationSigner;
 

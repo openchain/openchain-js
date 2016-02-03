@@ -14,8 +14,8 @@
 
 var assert = require("assert");
 var bitcore = require("bitcore-lib");
-var ByteBuffer = require("bytebuffer");
-var Long = require("long");
+var ByteBuffer = require("protobufjs").ByteBuffer;
+var Long = require("protobufjs").Long;
 var q = require("q");
 var openchain = require("../index");
 var TransactionBuilder = openchain.TransactionBuilder;

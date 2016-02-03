@@ -13,7 +13,7 @@
 // limitations under the License.
 
 var assert = require("assert");
-var ByteBuffer = require("bytebuffer");
+var ByteBuffer = require("protobufjs").ByteBuffer;
 var openchain = require("../index");
 var RecordKey = openchain.RecordKey;
 
