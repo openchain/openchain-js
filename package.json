@@ -1,6 +1,6 @@
 {
   "name": "openchain",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "JavaScript client library for Openchain",
   "homepage": "https://www.openchain.org/",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "url": "https://github.com/openchain/openchain-js.git"
   },
   "dependencies": {
-    "bitcore-lib": "~0.13.11",
+    "bitcore-lib": "~0.13.15",
     "protobufjs": "4.1.3",
     "httpinvoke": "1.4.0"
   },
