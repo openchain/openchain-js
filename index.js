@@ -39,6 +39,3 @@ bitcore.Networks.add({
     port: livenet.port,
     dnsSeeds: livenet.dnsSeeds
 });
-
-module.exports.bitcore = bitcore;
-

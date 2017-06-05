@@ -54,7 +54,6 @@ The ``openchain`` module exports the following objects:
 - ``MutationSigner``: A class that can be used to sign a mutation.
 - ``ByteBuffer``: A buffer of raw bytes.
 - ``Long``: A class for representing a 64 bit integer value.
-- ``bitcore``: The bitcore class from the bitcore-lib npm package.
 
 ## Code samples
 
@@ -83,11 +82,12 @@ This code submits a transaction that transfers 100 units of an asset from an iss
 
 ``` js
 var openchain = require("openchain");
+var bitcore = require("bitcore-lib");
 
 var seed = "0123456789abcdef0123456789abcdef";
 
 // Load a private key from a seed
-var privateKey = openchain.bitcore.HDPrivateKey.fromSeed(seed, "openchain");
+var privateKey = bitcore.HDPrivateKey.fromSeed(seed, "openchain");
 var address = privateKey.publicKey.toAddress();
 
 // Calculate the accounts corresponding to the private key
@@ -133,11 +133,12 @@ This code submits a transaction recording a piece of arbitrary data (the ``store
 
 ``` js
 var openchain = require("openchain");
+var bitcore = require("bitcore-lib");
 
 var seed = "0123456789abcdef0123456789abcdef";
 
 // Load a private key from a seed
-var privateKey = openchain.bitcore.HDPrivateKey.fromSeed(seed, "openchain");
+var privateKey = bitcore.HDPrivateKey.fromSeed(seed, "openchain");
 var address = privateKey.publicKey.toAddress();
 
 // Calculate the accounts corresponding to the private key
